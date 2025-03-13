@@ -1,18 +1,34 @@
 #include "snake.h"
 #include "cvec_snake.h"
 #include "symbols.h"
+#include "treat.h"
+#include <stdlib.h>
 
 Snake *snake_init(void) {
   Snake *snake = malloc(sizeof(Snake));
   snake->body = vec_init();
   snake->direction.x = 1;
   snake->direction.y = 0;
-  snake_vec_push_back(snake->body, (Coordinate){0, 0});
+  snake_vec_push_back(snake->body, (Coordinate){1, 1});
   return snake;
 }
 
 void update_snake(Snake *snake, WINDOW *win) {
+  int y, x;
+  getmaxyx(win, y, x);
+
   Coordinate head = snake_vec_get(snake->body, 0);
+  mvprintw(0, 0, "snake x: %d, y: %d", head.x, head.y);
+
+  if (head.x <= 1 && snake->direction.x == -1)
+    head.x = x - 1;
+  if (head.y <= 1 && snake->direction.y == -1)
+    head.y = y - 1;
+  if (head.x == x - 2 && snake->direction.x == 1)
+    head.x = 0;
+  if (head.y == y - 2 && snake->direction.y == 1)
+    head.y = 0;
+
   Coordinate new_head = {head.x + snake->direction.x,
                          head.y + snake->direction.y};
 
@@ -40,18 +56,26 @@ void update_snake(Snake *snake, WINDOW *win) {
 void snake_set_direction(Snake *snake, DIRECTION direction) {
   switch (direction) {
   case UP:
+    if (snake->direction.y == 1)
+      break;
     snake->direction.x = 0;
     snake->direction.y = -1;
     break;
   case DOWN:
+    if (snake->direction.y == -1)
+      break;
     snake->direction.x = 0;
     snake->direction.y = 1;
     break;
   case LEFT:
+    if (snake->direction.x == 1)
+      break;
     snake->direction.x = -1;
     snake->direction.y = 0;
     break;
   case RIGHT:
+    if (snake->direction.x == -1)
+      break;
     snake->direction.x = 1;
     snake->direction.y = 0;
     break;
@@ -81,6 +105,14 @@ int check_collision(Snake *snake) {
     if (head.x == body_part.x && head.y == body_part.y) {
       return 1;
     }
+  }
+  return 0;
+}
+
+int check_collision_treat(Snake *snake, Treat *treat) {
+  Coordinate head = get_snake_head(snake);
+  if (head.x == treat->position.x && head.y == treat->position.y) {
+    return 1;
   }
   return 0;
 }

@@ -2,6 +2,7 @@
 #define __NSNAKES_SNAKE_H__
 
 #include "cvec_snake.h"
+#include "treat.h"
 #include <ncurses.h>
 
 typedef struct Direction {
@@ -44,5 +45,9 @@ int check_collision(Snake *snake);
 
 // get the current poition
 Coordinate get_snake_head(Snake *snake);
+
+// check if snake is colliding with treat
+int check_collision_treat(Snake *snake, Treat *treat);
+
 
 #endif // __NSNAKES_SNAKE_H__

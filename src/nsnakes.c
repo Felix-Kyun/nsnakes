@@ -13,7 +13,8 @@ int main(void) {
   noecho();              // don't echo input
   curs_set(0);           // hide cursor
   nodelay(stdscr, TRUE); // non-blocking input
-  // box(stdscr, 0, 0);     // draw border
+  keypad(stdscr, TRUE);  // enable arrow keys
+  box(stdscr, 0, 0);     // draw border
 
   // init game objects
   Snake *snake = snake_init();
@@ -26,16 +27,16 @@ int main(void) {
     // input
     int ch = getch();
     switch (ch) {
-    case 'w':
+    case KEY_UP:
       snake_set_direction(snake, UP);
       break;
-    case 's':
+    case KEY_DOWN:
       snake_set_direction(snake, DOWN);
       break;
-    case 'a':
+    case KEY_LEFT:
       snake_set_direction(snake, LEFT);
       break;
-    case 'd':
+    case KEY_RIGHT:
       snake_set_direction(snake, RIGHT);
       break;
     case 'q':
@@ -45,6 +46,12 @@ int main(void) {
 
     // update
     update_snake(snake, stdscr);
+    if (check_collision_treat(snake, treat)) {
+      snake_grow(snake);
+      treat_new(treat, stdscr);
+    }
+
+    // draw
     wrefresh(stdscr);
 
     // sleep

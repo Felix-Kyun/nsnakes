@@ -23,8 +23,14 @@ $(_OBJS): $(BUILD_DIR)/%.o: src/%.c
 $(BUILD_DIR):
 	$(shell [ -d $(BUILD_DIR) ] || mkdir -p $(BUILD_DIR))
 
+lazy: # for lazy people
+	make clean
+	make all
+	./nsnakes
+	clear
+
 clean:
 	rm -rf build/
 	rm $(TARGETS)
 
-.PHONY: clean all
+.PHONY: clean all test
