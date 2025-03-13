@@ -1,0 +1,22 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-pedantic",
+      "-D_DEFAULT_SOURCE",
+      "-D_XOPEN_SOURCE=600",
+      "-Iinclude",
+      "-Icvec/include",
+      "-o",
+      "build/nsnakes.o",
+      "src/nsnakes.c"
+    ],
+    "directory": "/home/felix/Code/c/nsnakes",
+    "file": "/home/felix/Code/c/nsnakes/src/nsnakes.c",
+    "output": "/home/felix/Code/c/nsnakes/build/nsnakes.o"
+  }
+]
