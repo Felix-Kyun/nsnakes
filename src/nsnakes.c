@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 double get_delta_time(void);
+void show_popup(WINDOW *win, const char *msg);
 
 int main(void) {
   /* init */
@@ -19,11 +20,16 @@ int main(void) {
   nodelay(stdscr, TRUE); // non-blocking input
   keypad(stdscr, TRUE);  // enable arrow keys
   box(stdscr, 0, 0);     // draw border
+  start_color();         // enable colors
+  use_default_colors();  // use terminal colors
 
   // init game objects
   Snake *snake = snake_init();
   Treat *treat = treat_init();
   treat_new(treat, snake, stdscr);
+
+  // color
+  init_pair(1, COLOR_GREEN, -1); // Snake Head
 
   /* game loop */
   int8_t game_over = 0;
@@ -55,6 +61,7 @@ int main(void) {
     // update
     update_snake(snake, stdscr);
     if (check_collision(snake)) {
+      show_popup(stdscr, "Game Over");
       game_over = 1;
     }
     if (check_collision_treat(snake, treat)) {
@@ -71,7 +78,7 @@ int main(void) {
     double delta_time = get_delta_time();
     usleep(
         ((delta_time < DELTA_TIME) ? (DELTA_TIME - delta_time) : DELTA_TIME) *
-        1000);
+        (1000 + snake->body->size * SPEED_MULTIPLIER));
   }
 
   /* deinit */
@@ -85,10 +92,24 @@ double get_delta_time(void) { // ms
   static struct timespec prev_time = {0, 0};
   struct timespec current_time;
   clock_gettime(CLOCK_MONOTONIC, &current_time);
+
+  // calc difference
   double delta_time = (current_time.tv_sec - prev_time.tv_sec) * 1000 +
                       (current_time.tv_nsec - prev_time.tv_nsec) / 1e6;
+  // print delta time except for the first time
   if (prev_time.tv_sec != 0)
     mvprintw(0, 0, "[dt: %7.5f]", delta_time);
   prev_time = current_time;
   return delta_time;
+}
+
+void show_popup(WINDOW *win, const char *msg) {
+  int x, y;
+  getmaxyx(win, y, x);
+  WINDOW *popup = newwin(3, 20, y / 2 - 1, x / 2 - 10);
+  box(popup, 0, 0);
+  mvwprintw(popup, 1, 1, "%s", msg);
+  wrefresh(popup);
+  wgetch(popup);
+  delwin(popup);
 }

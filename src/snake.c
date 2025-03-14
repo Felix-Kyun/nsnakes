@@ -1,7 +1,7 @@
 #include "snake.h"
 #include "cvec_snake.h"
 #include "symbols.h"
-#include "treat.h"
+#include "misc.h"
 #include <stdlib.h>
 
 Snake *snake_init(void) {
@@ -42,7 +42,8 @@ void update_snake(Snake *snake, WINDOW *win) {
   mvwaddwstr(stdscr, old.y, old.x, L" ");
 
   // draw new head
-  mvwaddwstr(win, new_head.y, new_head.x, SNAKE_HEAD);
+  // mvwaddwstr(win, new_head.y, new_head.x, SNAKE_HEAD);
+  mvadd_wch(new_head.y, new_head.x, get_snake_head_symbol());
 }
 
 void snake_set_direction(Snake *snake, DIRECTION direction) {
