@@ -19,8 +19,8 @@ void update_snake(Snake *snake, WINDOW *win) {
 
   Coordinate head = snake_vec_get(snake->body, 0);
   mvwaddwstr(win, head.y, head.x, SNAKE_BODY);
-  
-  mvprintw(0, 0, "snake x: %d, y: %d", head.x, head.y);
+
+  // mvprintw(0, 0, "snake x: %d, y: %d", head.x, head.y);
 
   if (head.x <= 1 && snake->direction.x == -1)
     head.x = x - 1;
@@ -43,7 +43,6 @@ void update_snake(Snake *snake, WINDOW *win) {
 
   // draw new head
   mvwaddwstr(win, new_head.y, new_head.x, SNAKE_HEAD);
-
 }
 
 void snake_set_direction(Snake *snake, DIRECTION direction) {
@@ -105,10 +104,8 @@ int check_collision(Snake *snake) {
 int check_collision_treat(Snake *snake, Treat *treat) {
   Coordinate head = get_snake_head(snake);
   if (head.x == treat->position.x && head.y == treat->position.y) {
-  mvprintw(0, 0, "collided");
     return 1;
   }
-
 
   return 0;
 }
@@ -118,7 +115,7 @@ void treat_new(Treat *treat, Snake *snake, WINDOW *win) {
   getmaxyx(win, y, x);
 
   int new_x = rand() % (x - 2);
-  int new_y = rand() % (y - 2) ;
+  int new_y = rand() % (y - 2);
 
   treat->position.x = (new_x == 0) ? 1 : new_x;
   treat->position.y = (new_y == 0) ? 1 : new_y;

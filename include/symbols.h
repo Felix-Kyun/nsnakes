@@ -13,4 +13,7 @@
 // #define TREAT L"\U0001F34E" // 🍎
 #define TREAT L"♦" // █
 
+#define UPDATE_PER_SECOND 20
+#define DELTA_TIME (1.0 / UPDATE_PER_SECOND * 1000)
+
 #endif // __NSNAKES_SYMBOLS_H__

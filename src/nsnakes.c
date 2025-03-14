@@ -1,9 +1,13 @@
 #include "snake.h"
+#include "symbols.h"
 #include "treat.h"
 #include <locale.h>
 #include <ncurses.h>
 #include <stdint.h>
+#include <time.h>
 #include <unistd.h>
+
+double get_delta_time(void);
 
 int main(void) {
   /* init */
@@ -58,11 +62,16 @@ int main(void) {
       treat_new(treat, snake, stdscr);
     }
 
+    // mvprintw(0, 0, "dt: %.4f", get_delta_time());
+
     // draw
     wrefresh(stdscr);
 
     // sleep
-    usleep(100000 - snake->body->size * 500);
+    double delta_time = get_delta_time();
+    usleep(
+        ((delta_time < DELTA_TIME) ? (DELTA_TIME - delta_time) : DELTA_TIME) *
+        1000);
   }
 
   /* deinit */
@@ -70,4 +79,16 @@ int main(void) {
   snake_deinit(snake);
   endwin();
   return 0;
+}
+
+double get_delta_time(void) { // ms
+  static struct timespec prev_time = {0, 0};
+  struct timespec current_time;
+  clock_gettime(CLOCK_MONOTONIC, &current_time);
+  double delta_time = (current_time.tv_sec - prev_time.tv_sec) * 1000 +
+                      (current_time.tv_nsec - prev_time.tv_nsec) / 1e6;
+  if (prev_time.tv_sec != 0)
+    mvprintw(0, 0, "[dt: %7.5f]", delta_time);
+  prev_time = current_time;
+  return delta_time;
 }
