@@ -18,6 +18,8 @@ void update_snake(Snake *snake, WINDOW *win) {
   getmaxyx(win, y, x);
 
   Coordinate head = snake_vec_get(snake->body, 0);
+  mvwaddwstr(win, head.y, head.x, SNAKE_BODY);
+  
   mvprintw(0, 0, "snake x: %d, y: %d", head.x, head.y);
 
   if (head.x <= 1 && snake->direction.x == -1)
@@ -40,21 +42,9 @@ void update_snake(Snake *snake, WINDOW *win) {
   mvwaddwstr(stdscr, old.y, old.x, L" ");
 
   // draw new head
-  mvwaddwstr(win, new_head.y, new_head.x, SNAKE_BODY);
+  mvwaddwstr(win, new_head.y, new_head.x, SNAKE_HEAD);
 
-  // for (size_t i = 0; i < snake->body->size; i++) {
-  //   Coordinate body_part = snake_vec_get(snake->body, i);
-  //   mvwaddwstr(win, body_part.y, body_part.x, SNAKE_BODY);
-  // }
 }
-
-// void draw_snake(Snake *snake, WINDOW *win) {
-//   for (size_t i = 0; i < snake->body->size; i++) {
-//     Coordinate body_part = snake_vec_get(snake->body, i);
-//     mvwaddwstr(win, body_part.y, body_part.x, SNAKE_BODY);
-//   }
-//   wrefresh(win);
-// }
 
 void snake_set_direction(Snake *snake, DIRECTION direction) {
   switch (direction) {
@@ -115,7 +105,7 @@ int check_collision(Snake *snake) {
 int check_collision_treat(Snake *snake, Treat *treat) {
   Coordinate head = get_snake_head(snake);
   if (head.x == treat->position.x && head.y == treat->position.y) {
-  mvprintw(0, 0, "collided");;
+  mvprintw(0, 0, "collided");
     return 1;
   }
 
@@ -127,8 +117,11 @@ void treat_new(Treat *treat, Snake *snake, WINDOW *win) {
   int y, x;
   getmaxyx(win, y, x);
 
-  treat->position.x = rand() % (x - 2) ;
-  treat->position.y = rand() % (y - 2) ;
+  int new_x = rand() % (x - 2);
+  int new_y = rand() % (y - 2) ;
+
+  treat->position.x = (new_x == 0) ? 1 : new_x;
+  treat->position.y = (new_y == 0) ? 1 : new_y;
 
   for (size_t i = 0; i < snake->body->size; i++) {
     Coordinate body_part = snake_vec_get(snake->body, i);
@@ -138,7 +131,5 @@ void treat_new(Treat *treat, Snake *snake, WINDOW *win) {
     }
   }
 
-  mvprintw(0, x / 2 - 15, "snake x: %d, y: %d", treat->position.x,
-           treat->position.y);
   mvwaddwstr(win, treat->position.y, treat->position.x, TREAT);
 }

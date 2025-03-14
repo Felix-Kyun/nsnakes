@@ -62,7 +62,7 @@ int main(void) {
     wrefresh(stdscr);
 
     // sleep
-    usleep(100000 / 2);
+    usleep(100000 - snake->body->size * 500);
   }
 
   /* deinit */

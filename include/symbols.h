@@ -4,7 +4,10 @@
 #include <ncurses.h>
 
 // used to draw the snake body
-#define SNAKE_BODY L"\u2b58" // █
+#define SNAKE_BODY L"○"
+
+// snake head
+#define SNAKE_HEAD L"●"
 
 // used to draw the treat
 // #define TREAT L"\U0001F34E" // 🍎
