@@ -49,5 +49,8 @@ Coordinate get_snake_head(Snake *snake);
 // check if snake is colliding with treat
 int check_collision_treat(Snake *snake, Treat *treat);
 
+// create new treat which doesnt collide with snake
+void treat_new(Treat *treat, Snake *snake, WINDOW *win);
+
 
 #endif // __NSNAKES_SNAKE_H__

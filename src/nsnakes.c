@@ -19,7 +19,7 @@ int main(void) {
   // init game objects
   Snake *snake = snake_init();
   Treat *treat = treat_init();
-  treat_new(treat, stdscr);
+  treat_new(treat, snake, stdscr);
 
   /* game loop */
   int8_t game_over = 0;
@@ -42,20 +42,27 @@ int main(void) {
     case 'q':
       game_over = 1;
       break;
+    case 'p':
+      while (getch() != 'p')
+        usleep(100000);
+      break;
     }
 
     // update
     update_snake(snake, stdscr);
+    if (check_collision(snake)) {
+      game_over = 1;
+    }
     if (check_collision_treat(snake, treat)) {
       snake_grow(snake);
-      treat_new(treat, stdscr);
+      treat_new(treat, snake, stdscr);
     }
 
     // draw
     wrefresh(stdscr);
 
     // sleep
-    usleep(100000);
+    usleep(100000 / 2);
   }
 
   /* deinit */

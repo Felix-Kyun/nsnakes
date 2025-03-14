@@ -39,10 +39,13 @@ void update_snake(Snake *snake, WINDOW *win) {
   Coordinate old = snake_vec_pop_back(snake->body);
   mvwaddwstr(stdscr, old.y, old.x, L" ");
 
-  for (size_t i = 0; i < snake->body->size; i++) {
-    Coordinate body_part = snake_vec_get(snake->body, i);
-    mvwaddwstr(win, body_part.y, body_part.x, SNAKE_BODY);
-  }
+  // draw new head
+  mvwaddwstr(win, new_head.y, new_head.x, SNAKE_BODY);
+
+  // for (size_t i = 0; i < snake->body->size; i++) {
+  //   Coordinate body_part = snake_vec_get(snake->body, i);
+  //   mvwaddwstr(win, body_part.y, body_part.x, SNAKE_BODY);
+  // }
 }
 
 // void draw_snake(Snake *snake, WINDOW *win) {
@@ -112,7 +115,30 @@ int check_collision(Snake *snake) {
 int check_collision_treat(Snake *snake, Treat *treat) {
   Coordinate head = get_snake_head(snake);
   if (head.x == treat->position.x && head.y == treat->position.y) {
+  mvprintw(0, 0, "collided");;
     return 1;
   }
+
+
   return 0;
+}
+
+void treat_new(Treat *treat, Snake *snake, WINDOW *win) {
+  int y, x;
+  getmaxyx(win, y, x);
+
+  treat->position.x = rand() % (x - 2) ;
+  treat->position.y = rand() % (y - 2) ;
+
+  for (size_t i = 0; i < snake->body->size; i++) {
+    Coordinate body_part = snake_vec_get(snake->body, i);
+    if (treat->position.x == body_part.x && treat->position.y == body_part.y) {
+      treat_new(treat, snake, win);
+      return;
+    }
+  }
+
+  mvprintw(0, x / 2 - 15, "snake x: %d, y: %d", treat->position.x,
+           treat->position.y);
+  mvwaddwstr(win, treat->position.y, treat->position.x, TREAT);
 }

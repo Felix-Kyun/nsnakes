@@ -12,7 +12,7 @@ typedef struct Treat {
 Treat *treat_init(void);
 
 // create new treat at random position
-void treat_new(Treat *treat, WINDOW *win);
+// void treat_new(Treat *treat, WINDOW *win);
 
 // free treat memory
 void treat_deinit(Treat *treat);
